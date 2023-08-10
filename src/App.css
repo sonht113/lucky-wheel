@@ -1,0 +1,113 @@
+.App {
+  position: relative;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.wheel-canvas {
+  border: 10px solid red;
+  border-radius: 50%;
+  display: block;
+  margin: 20px auto;
+}
+
+.spinning {
+  animation: spin 5s linear infinite;
+}
+
+.spin-button {
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.spin-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.result-popup {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hc-luckywheel-btn {
+  position: absolute;
+  left: 50%; /*Change this when change size*/
+  top: -20px; /*Change this when change size*/
+  z-index: 3;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #f4e9cc;
+  background-color: #453f32;
+  line-height: 50px;
+  text-align: center;
+  font-size: 15px;
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
+  /* box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6); */
+  text-decoration: none;
+  transform: translate(-50%);
+}
+
+.hc-luckywheel-center {
+  position: absolute;
+  left: 50%; /*Change this when change size*/
+  top: 50%; /*Change this when change size*/
+  z-index: 3;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #453f32;
+  line-height: 50px;
+  text-align: center;
+  font-size: 15px;
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
+  /* box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6); */
+  text-decoration: none;
+  transform: translate(-50%, -50%);
+}
+
+.hc-luckywheel-btn::after {
+  position: absolute;
+  display: block;
+  content: '';
+  left: 5px;
+  bottom: -30px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  border-width: 20px;
+  transform: rotate(180deg);
+  border-style: solid;
+  border-color: transparent;
+  border-bottom-color: #453f32;
+}
+
+.arrow-indicator {
+  position: absolute;
+  top: 20px; /* Adjust vertical position as needed */
+  left: calc(50% - 20px); /* Adjust horizontal position as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
