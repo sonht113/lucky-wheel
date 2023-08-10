@@ -1,0 +1,83 @@
+/* LuckySpinGame.css */
+.lucky-spin-game {
+  text-align: center;
+}
+
+.wheel {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  border-radius: 50%;
+  border: 10px solid #333;
+  transition: transform 5s ease-out;
+}
+
+.spinning .wheel {
+  animation: spin 5s linear infinite;
+}
+
+.segment {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 50%, 0% 0%, 100% 0%);
+  transform-origin: 50% 100%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Customize segment colors */
+.segment-0 {
+  background-color: #ff5733;
+}
+.segment-1 {
+  background-color: #33ff57;
+}
+.segment-2 {
+  background-color: #5733ff;
+}
+.segment-3 {
+  background-color: #33ffdd;
+}
+.segment-4 {
+  background-color: #dd33ff;
+}
+.segment-5 {
+  background-color: #ffdd33;
+}
+.segment-6 {
+  background-color: #33ddff;
+}
+.segment-7 {
+  background-color: #ff3357;
+}
+
+.spin-button {
+  margin-top: 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(2160deg); /* Six full spins */
+  }
+}
