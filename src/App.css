@@ -1,146 +1,32 @@
-/* .App {
-  position: relative;
-  text-align: center;
-  margin-top: 100px;
-}
-
-.title {
-  font-size: 24px;
-}
-
-.wheel-canvas {
-  border: 10px solid red;
-  border-radius: 50%;
-  display: block;
-  margin: 20px auto;
-}
-
-.spinning {
-  animation: spin 5s linear infinite;
-}
-
-.spin-button {
-  font-size: 16px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.spin-button:disabled {
-  background-color: #bdc3c7;
-  cursor: not-allowed;
-}
-
-.result-popup {
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #27ae60;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.hc-luckywheel-btn {
-  position: absolute;
-  left: 50%;
-  top: -20px;
-  z-index: 3;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  color: #f4e9cc;
-  background-color: #453f32;
-  line-height: 50px;
-  text-align: center;
-  font-size: 15px;
-  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6);
-  text-decoration: none;
-  transform: translate(-50%);
-}
-
-.hc-luckywheel-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 3;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #453f32;
-  line-height: 50px;
-  text-align: center;
-  font-size: 15px;
-  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6);
-  text-decoration: none;
-  transform: translate(-50%, -50%);
-}
-
-.hc-luckywheel-btn::after {
-  position: absolute;
-  display: block;
-  content: '';
-  left: 5px;
-  bottom: -30px;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  border-width: 20px;
-  transform: rotate(180deg);
-  border-style: solid;
-  border-color: transparent;
-  border-bottom-color: #453f32;
-}
-
-.arrow-indicator {
-  position: absolute;
-  top: 20px;
-  left: calc(50% - 20px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
-
 .wrapper {
   margin-top: 50px;
   display: flex;
   justify-content: center;
 }
 
-.hc-luckywheel ul,
-.hc-luckywheel li {
+.luckywheel ul,
+.luckywheel li {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.hc-luckywheel {
+.luckywheel {
   position: relative;
-  width: 500px; /*Change this when change size*/
-  height: 500px; /*Change this when change size*/
+  width: 600px;
+  height: 600px;
   border-radius: 50%;
-  border: 16px solid #e44025;
+  border: 10px solid #345623;
   box-shadow: 0 2px 3px #333, 0 0 2px #000;
 }
 
-.hc-luckywheel-container {
+.luckywheel-container {
   position: absolute;
   left: 0;
   top: 0;
   z-index: 1;
-  width: 468px;
-  height: 468px;
+  width: 580px;
+  height: 580px;
   border-radius: inherit;
   background-clip: padding-box;
   background-color: #ffcb3f;
@@ -148,13 +34,13 @@
   transition: transform 6s ease;
 }
 
-.hc-luckywheel-container canvas {
+.luckywheel-container canvas {
   width: inherit;
   height: inherit;
   border-radius: 50%;
 }
 
-.hc-luckywheel-list {
+.luckywheel-list {
   position: absolute;
   left: 0;
   top: 0;
@@ -163,7 +49,7 @@
   z-index: 2;
 }
 
-.hc-luckywheel-item {
+.luckywheel-item {
   position: absolute;
   left: 0;
   top: 0;
@@ -174,31 +60,39 @@
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
 }
 
-.hc-luckywheel-item span {
+.section {
+  width: 100%;
+  border-radius: 50% 50% 70% 70% / 40% 40% 100% 100%;
+  padding-top: 5px;
+  padding-bottom: 65px;
+  margin: 0 auto;
+}
+
+.luckywheel-item span {
   position: relative;
   display: block;
-  padding-top: 20px;
-  /* width: 50px; */
+  top: -12px;
+  padding-top: 30px;
+  width: 24%;
   margin: 0 auto;
   text-align: center;
-  -webkit-transform-origin: 50% 250px; /*Change this when change size*/
-  -ms-transform-origin: 50% 250px; /*Change this when change size*/
-  transform-origin: 50% 250px;
-} /*Change this when change size*/
+  -webkit-transform-origin: 50% 300px;
+  -ms-transform-origin: 50% 300px;
+  transform-origin: 50% 300px;
+}
 
-.hc-luckywheel-item img {
+.luckywheel-item img {
   position: relative;
-  top: -20px;
-  left: 0px;
-  width: 100px; /*Change this when change size*/
-  height: 100px;
-} /*Change this when change size*/
+  width: 70px;
+  height: 70px;
+}
 
-.hc-luckywheel-btn {
+.luckywheel-logo {
   position: absolute;
-  left: 210px; /*Change this when change size*/
-  top: -50px; /*Change this when change size*/
-  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 666;
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -207,44 +101,12 @@
   line-height: 60px;
   text-align: center;
   font-size: 15px;
-  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6);
   text-decoration: none;
 }
-
-.hc-luckywheel-btn::after {
+.luckywheel-btn {
   position: absolute;
-  display: block;
-  content: '';
-  left: 10px;
-  bottom: -33px;
-  transform: rotate(180deg);
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  border-width: 20px;
-  border-style: solid;
-  border-color: transparent;
-  border-bottom-color: #e44025;
-}
-
-.hc-luckywheel-btn.disabled {
-  pointer-events: none;
-  background: #b07a7b;
-  color: #ccc;
-}
-
-.hc-luckywheel-btn.disabled::after {
-  border-bottom-color: #b07a7b;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100%;
-}
-
-.bg {
-  background-image: url('../images/bg.png');
+  left: 50%;
+  top: -40px;
+  z-index: 3;
+  transform: translate(-50%);
 }

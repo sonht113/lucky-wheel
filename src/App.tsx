@@ -1,132 +1,181 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import './App.css'
-import './typo.css'
-import { GiArrowCursor } from 'react-icons/gi'
-import html2canvas from 'html2canvas'
-import ReactDOM from 'react-dom'
+import { Ao, Vong, Nitro, Non, Miss, J2Logo } from '@/assets'
+import { FaMapMarkerAlt } from 'react-icons/fa'
 
-const slices = [
-  { color: '#FF5733', label: 'Slice 1' },
-  { color: '#FFC300', label: 'Slice 2' },
-  { color: '#33FF57', label: 'Slice 3' },
-  { color: '#337CFF', label: 'Slice 4' },
-  { color: '#8B33FF', label: 'Slice 5' },
-  { color: '#FF33E9', label: 'Slice 6' },
-  { color: '#337CFF', label: 'Slice 7' },
-  { color: '#8B33FF', label: 'Slice 8' }
+const prizes = [
+  {
+    text: 'Áo',
+    img: Ao,
+    number: 1,
+    percentpage: 0.1
+  },
+  {
+    text: 'Nón',
+    img: Non,
+    number: 1,
+    percentpage: 0.25 // 5%
+  },
+  {
+    text: 'Vòng',
+    img: Vong,
+    number: 1,
+    percentpage: 0.5 // 10%
+  },
+  {
+    text: 'Security',
+    img: J2Logo,
+    number: 1,
+    percentpage: 0.24 // 24%
+  },
+  {
+    text: 'Good luck',
+    img: Miss,
+    number: 1,
+    percentpage: 0.00001 // 60%
+  },
+  {
+    text: 'Nitro',
+    img: Nitro,
+    number: 1,
+    percentpage: 0.24 // 24%
+  },
+  {
+    text: 'Good luck',
+    img: Miss,
+    number: 1,
+    percentpage: 0.2 // 60%
+  },
+  {
+    text: 'Nitro',
+    img: Nitro,
+    percentpage: 0.2, // 60%
+    number: 1
+  }
 ]
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
-  const [spinning, setSpinning] = useState(false)
+  const [deg, setDeg] = useState<number>(0)
+  const [countSpin, setCountSpin] = useState<number>(5)
 
-  // const handleSpin = () => {
-  //   if (!spinning && canvasRef.current) {
-  //     setSpinning(true)
-  //     const randomIndex = Math.floor(Math.random() * slices.length)
-  //     const degrees = randomIndex * (360 / slices.length) + 1800 // Spin multiple rounds
+  const drawWheel = (num: number) => {
+    const rotateDeg = 360 / num / 2 + 90
+    const turnNum = 1 / num
+    const html = []
+    const id = 'luckywheel'
+    const ele = document.getElementById(id)
+    if (ele) {
+      const prizeItems = document.createElement('ul')
+      const container = ele.querySelector('.luckywheel-container')
+      if (canvasRef.current && container) {
+        const ctx = canvasRef.current.getContext('2d')!
+        for (let i = 0; i < num; i++) {
+          ctx.save()
+          ctx.beginPath()
+          ctx.translate(300, 300)
+          ctx.moveTo(0, 0)
+          ctx.rotate((((360 / num) * i - rotateDeg) * Math.PI) / 180)
+          ctx.arc(0, 0, 300, 0, (2 * Math.PI) / num, false) // Radius
+          // if (i % 2 == 0) {
+          //   ctx.fillStyle = '#ffb820'
+          // } else {
+          //   ctx.fillStyle = '#ffcb3f'
+          // }
+          ctx.fillStyle = '#ffffff'
+          ctx.fill()
+          ctx.lineWidth = 1
+          ctx.restore()
+          var prizeList = prizes
+          html.push('<li class="luckywheel-item"> <span style="')
+          html.push('transform' + ': rotate(' + i * turnNum + 'turn)">')
+          html.push(`<div style="border: 2px solid ${i % 2 === 0 ? 'blue' : 'yellow'}" class="section">`)
+          html.push('<img src=' + prizeList[i].img + ' style="margin: 0 auto" />')
+          html.push("<p id='curve' style='color: green; margin-top: 5px'>" + prizeList[i].text + '</p>')
+          html.push('</div></span> </li>')
+        }
+        prizeItems.className = 'luckywheel-list'
+        container.appendChild(prizeItems)
+        prizeItems.innerHTML = html.join('')
+      }
+    }
+  }
 
-  //     const startDeg = 0
-  //     const targetDeg = degrees
+  function randomIndex(prizes: { text: string; number: number; img: any; percentpage: number }[]) {
+    const rand = Math.random()
+    let prizeIndex = 0
 
-  //     const ctx = canvasRef.current.getContext('2d')!
-  //     const totalFrames = 120
-  //     let currentFrame = 0
-  //     const initialSpeed = 5 // Speed in degrees per frame
-  //     const spinInterval = 50 // Milliseconds between frames
-  //     const easingFactor = 0.1 // Easing factor for cubic easing function
+    switch (true) {
+      case rand < prizes[4].percentpage:
+        prizeIndex = 4
+        break
+      case rand < prizes[4].percentpage + prizes[3].percentpage:
+        prizeIndex = 3
+        break
+      case rand < prizes[4].percentpage + prizes[3].percentpage + prizes[2].percentpage:
+        prizeIndex = 2
+        break
+      case rand < prizes[4].percentpage + prizes[3].percentpage + prizes[2].percentpage + prizes[1].percentpage:
+        prizeIndex = 1
+        break
+      case rand <
+        prizes[4].percentpage +
+          prizes[3].percentpage +
+          prizes[2].percentpage +
+          prizes[1].percentpage +
+          prizes[0].percentpage:
+        prizeIndex = 0
+        break
+    }
+    return prizeIndex
+  }
 
-  //     const spinIntervalId = setInterval(() => {
-  //       const progress = currentFrame / totalFrames
-  //       const easedProgress = 1 - Math.pow(1 - progress, 3) // Cubic easing function
+  const handleSpin = () => {
+    if (countSpin > 0) {
+      setCountSpin((prevState) => prevState - 1)
+      const rand = randomIndex(prizes)
+      if (rand == null) {
+        return
+      }
+      let d = deg
+      d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / prizes.length))
+      setDeg(d)
+    }
+  }
 
-  //       if (currentFrame === totalFrames) {
-  //         clearInterval(spinIntervalId)
-  //         setSpinning(false)
-  //         setSelectedSlice(randomIndex)
-  //       } else {
-  //         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-  //         const rotation = startDeg + (targetDeg - startDeg) * easedProgress
-  //         drawWheel(ctx, rotation)
-  //         currentFrame++
-  //       }
-  //     }, spinInterval)
-  //   }
-  // }
-
-  // const drawWheel = async (ctx: CanvasRenderingContext2D, rotation: number) => {
-  //   const centerX = canvasRef.current!.width / 2
-  //   const centerY = canvasRef.current!.height / 2
-  //   const radius = Math.min(centerX, centerY) - 20
-
-  //   ctx.translate(250, 250)
-  //   ctx.rotate(rotation)
-
-  //   slices.forEach(async (slice, index) => {
-  //     const startAngle = index * (360 / slices.length) * (Math.PI / 180)
-  //     const endAngle = (index + 1) * (360 / slices.length) * (Math.PI / 180)
-
-  //     ctx.beginPath()
-  //     ctx.moveTo(0, 0)
-  //     ctx.arc(0, 0, radius, startAngle, endAngle, false)
-  //     ctx.fillStyle = slice.color
-  //     ctx.fill()
-
-  //     ctx.save()
-  //     ctx.rotate((startAngle + endAngle) / 2)
-  //     ctx.fillStyle = 'red'
-  //     ctx.font = '18px sans-serif'
-  //     ctx.textAlign = 'center'
-  //     ctx.textBaseline = 'middle'
-  //     ctx.fillText(slice.label, radius / 2, 0)
-  //     ctx.fill
-  //     ctx.restore()
-  //   })
-
-  //   ctx.rotate(-rotation)
-  //   ctx.translate(-centerX, -centerY)
-  // }
-
-  // useEffect(() => {
-  //   if (canvasRef.current) {
-  //     const ctx = canvasRef.current.getContext('2d')!
-  //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-  //     drawWheel(ctx, 0)
-  //   }
-  // }, [canvasRef])
+  useLayoutEffect(() => {
+    drawWheel(prizes.length)
+  }, [])
 
   return (
-    // <div>
-    //   <div className='App'>
-    //     <canvas
-    //       className={`wheel-canvas ${spinning ? 'spinning' : ''}`}
-    //       ref={canvasRef}
-    //       width={'500px'}
-    //       height={'500px'}
-    //     />
-    //     <a className='hc-luckywheel-btn' />
-    //     <a className='hc-luckywheel-center' />
-    //   </div>
-    //   <div className='flex flex-col justify-center items-center'>
-    //     <button className='spin-button' onClick={handleSpin} disabled={spinning}>
-    //       Spin the Wheel
-    //     </button>
-    //     {selectedSlice !== null && (
-    //       <div className='result-popup'>Congratulations! You landed on: {slices[selectedSlice].label}</div>
-    //     )}
-    //   </div>
-    // </div>
-    <div className='wrapper typo' id='wrapper'>
-      <section id='luckywheel' className='hc-luckywheel'>
-        <div className='hc-luckywheel-container'>
-          <canvas className='hc-luckywheel-canvas' width='500px' height='500px'>
-            Vòng Xoay May Mắn
-          </canvas>
-        </div>
-        <a className='hc-luckywheel-btn'>Xoay</a>
-      </section>
-    </div>
+    <React.Fragment>
+      <div className='wrapper typo' id='wrapper'>
+        <section id='luckywheel' className='luckywheel'>
+          <div className='luckywheel-container' style={deg !== 0 ? { transform: `rotate(${deg}deg)` } : {}}>
+            <canvas ref={canvasRef} className='luckywheel-canvas' width='600px' height='600px'>
+              Vòng Xoay May Mắn
+            </canvas>
+          </div>
+          <div className='luckywheel-btn'>
+            <FaMapMarkerAlt className='text-[60px] text-cyan-700' />
+          </div>
+
+          <a className='luckywheel-logo'></a>
+        </section>
+      </div>
+      <div className='flex justify-center mt-[70px]'>
+        <button
+          disabled={countSpin === 0}
+          onClick={handleSpin}
+          className={`py-2 ${
+            countSpin === 0 ? 'cursor-not-allowed' : 'cursor-pointer'
+          } px-5 w-[50%] rounded-lg bg-cyan-400 text-white font-bold`}
+        >
+          Quay
+          <p className='font-light'>Còn {countSpin} lượt quay</p>
+        </button>
+      </div>
+    </React.Fragment>
   )
 }
 
