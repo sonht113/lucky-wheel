@@ -1,58 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import './App.css'
-import { Ao, Vong, Nitro, Non, Miss, J2Logo } from '@/assets'
 import { FaMapMarkerAlt } from 'react-icons/fa'
-
-const prizes = [
-  {
-    text: 'Áo',
-    img: Ao,
-    number: 1,
-    percentpage: 0.1
-  },
-  {
-    text: 'Nón',
-    img: Non,
-    number: 1,
-    percentpage: 0.25 // 5%
-  },
-  {
-    text: 'Vòng',
-    img: Vong,
-    number: 1,
-    percentpage: 0.5 // 10%
-  },
-  {
-    text: 'Security',
-    img: J2Logo,
-    number: 1,
-    percentpage: 0.24 // 24%
-  },
-  {
-    text: 'Good luck',
-    img: Miss,
-    number: 1,
-    percentpage: 0.00001 // 60%
-  },
-  {
-    text: 'Nitro',
-    img: Nitro,
-    number: 1,
-    percentpage: 0.24 // 24%
-  },
-  {
-    text: 'Good luck',
-    img: Miss,
-    number: 1,
-    percentpage: 0.2 // 60%
-  },
-  {
-    text: 'Nitro',
-    img: Nitro,
-    percentpage: 0.2, // 60%
-    number: 1
-  }
-]
+import { PRIZES } from '@/data/constant'
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -77,16 +26,11 @@ const App: React.FC = () => {
           ctx.moveTo(0, 0)
           ctx.rotate((((360 / num) * i - rotateDeg) * Math.PI) / 180)
           ctx.arc(0, 0, 300, 0, (2 * Math.PI) / num, false) // Radius
-          // if (i % 2 == 0) {
-          //   ctx.fillStyle = '#ffb820'
-          // } else {
-          //   ctx.fillStyle = '#ffcb3f'
-          // }
           ctx.fillStyle = '#ffffff'
           ctx.fill()
           ctx.lineWidth = 1
           ctx.restore()
-          var prizeList = prizes
+          var prizeList = PRIZES
           html.push('<li class="luckywheel-item"> <span style="')
           html.push('transform' + ': rotate(' + i * turnNum + 'turn)">')
           html.push(`<div style="border: 2px solid ${i % 2 === 0 ? 'blue' : 'yellow'}" class="section">`)
@@ -133,18 +77,18 @@ const App: React.FC = () => {
   const handleSpin = () => {
     if (countSpin > 0) {
       setCountSpin((prevState) => prevState - 1)
-      const rand = randomIndex(prizes)
+      const rand = randomIndex(PRIZES)
       if (rand == null) {
         return
       }
       let d = deg
-      d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / prizes.length))
+      d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / PRIZES.length))
       setDeg(d)
     }
   }
 
   useLayoutEffect(() => {
-    drawWheel(prizes.length)
+    drawWheel(PRIZES.length)
   }, [])
 
   return (
