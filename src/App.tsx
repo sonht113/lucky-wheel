@@ -1,22 +1,28 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import { PRIZES } from '@/data/constant'
+import Swal from 'sweetalert2'
+import 'sweetalert2/src/sweetalert2.scss'
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [deg, setDeg] = useState<number>(0)
   const [countSpin, setCountSpin] = useState<number>(5)
+  const [winningResult, setWinningResult] = useState<{ text: string; img: string }>({ text: '', img: '' })
+  const ID = 'luckywheel'
 
   const drawWheel = (num: number) => {
     const rotateDeg = 360 / num / 2 + 90
     const turnNum = 1 / num
     const html = []
-    const id = 'luckywheel'
-    const ele = document.getElementById(id)
+
+    const ele = document.getElementById(ID)
     if (ele) {
       const prizeItems = document.createElement('ul')
       const container = ele.querySelector('.luckywheel-container')
+      let prizeList = PRIZES
+
       if (canvasRef.current && container) {
         const ctx = canvasRef.current.getContext('2d')!
         for (let i = 0; i < num; i++) {
@@ -30,7 +36,7 @@ const App: React.FC = () => {
           ctx.fill()
           ctx.lineWidth = 1
           ctx.restore()
-          var prizeList = PRIZES
+
           html.push('<li class="luckywheel-item"> <span style="')
           html.push('transform' + ': rotate(' + i * turnNum + 'turn)">')
           html.push(`<div style="border: 2px solid ${i % 2 === 0 ? 'blue' : 'yellow'}" class="section">`)
@@ -45,7 +51,7 @@ const App: React.FC = () => {
     }
   }
 
-  function randomIndex(prizes: { text: string; number: number; img: any; percentpage: number }[]) {
+  function randomIndex(prizes: { text: string; img: any; percentpage: number }[]) {
     const rand = Math.random()
     let prizeIndex = 0
 
@@ -83,11 +89,36 @@ const App: React.FC = () => {
       }
       let d = deg
       d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / PRIZES.length))
+      setWinningResult({
+        text: PRIZES[rand].text,
+        img: PRIZES[rand].img
+      })
       setDeg(d)
+      alertAfterTransitionEnd()
     }
   }
 
-  useLayoutEffect(() => {
+  const alertAfterTransitionEnd = () => {
+    const ele = document.getElementById(ID)
+    if (ele) {
+      const container = ele.querySelector('.luckywheel-container')
+      if (container) {
+        container.addEventListener(
+          'transitionend',
+          () =>
+            Swal.fire({
+              html: '<img src=' + winningResult.img + ' />',
+              imageHeight: 100,
+              //showDenyButton: true,
+              showCancelButton: true
+            }),
+          false
+        )
+      }
+    }
+  }
+
+  useEffect(() => {
     drawWheel(PRIZES.length)
   }, [])
 
