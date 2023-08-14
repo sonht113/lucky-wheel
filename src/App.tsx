@@ -137,7 +137,7 @@ const App: React.FC = () => {
   return (
     <div className='relative flex flex-col justify-center items-center'>
       <Modal close={() => setOpenModal(false)} className={openModal ? '' : 'invisible opacity-0 scale-0 transition'}>
-        <div className='flex flex-col justify-center items-center gap-3 py-8 px-8 bg-white rounded-lg'>
+        <div className='flex flex-col justify-center items-center gap-3 py-8 px-5 bg-white rounded-lg'>
           <img src={Logo} className='w-[30%]' />
           <span className='text-xl font-bold'>Chúc mừng</span>
           <span className='text-xl font-bold'>Phần thưởng của bạn là</span>
