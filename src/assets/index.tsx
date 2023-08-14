@@ -4,5 +4,6 @@ import Non from './Non.png'
 import Miss from './miss.png'
 import Vong from './Vong.png'
 import J2Logo from './j2_logo.png'
+import Logo from './logo.png'
 
-export { Ao, Nitro, Non, Miss, Vong, J2Logo }
+export { Ao, Logo, Nitro, Non, Miss, Vong, J2Logo }

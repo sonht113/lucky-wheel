@@ -2,43 +2,43 @@ import { Nitro, Non, Ao, Miss, Vong, J2Logo } from '@/assets'
 
 export const PRIZES = [
   {
-    text: 'Áo',
+    text: 'Bộ trà',
     img: Ao,
-    percentpage: 0.01
+    percentpage: 1 // 1%
   },
   {
-    text: 'Nón',
+    text: 'E-Voucher 100k',
     img: Non,
-    percentpage: 0.01 // 5%
+    percentpage: 10 // 10%
   },
   {
-    text: 'Vòng',
+    text: '100 điểm',
     img: Vong,
-    percentpage: 0.1 // 10%
+    percentpage: 20 // 20%
   },
   {
-    text: 'Security',
+    text: 'Lượt chơi',
     img: J2Logo,
-    percentpage: 0.02 // 24%
+    percentpage: 50 // 50%
   },
   {
-    text: 'Good luck',
+    text: 'Bộ chén',
     img: Miss,
-    percentpage: 0.5 // 60%
+    percentpage: 1 // 1%
   },
   {
-    text: 'Nitro',
+    text: 'E-Voucer 50k',
     img: Nitro,
-    percentpage: 0.24 // 24%
+    percentpage: 40 // 40%
   },
   {
-    text: 'Good luck',
+    text: '10 điểm',
     img: Miss,
-    percentpage: 0.8 // 60%
+    percentpage: 60 // 60%
   },
   {
-    text: 'Nitro',
+    text: 'Lượt chơi',
     img: Nitro,
-    percentpage: 0.2 // 60%
+    percentpage: 60 // 60%
   }
 ]

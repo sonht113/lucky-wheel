@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import { PRIZES } from '@/data/constant'
-import Swal from 'sweetalert2'
-import 'sweetalert2/src/sweetalert2.scss'
+import Modal from '@/components/modal'
+import { Logo } from '@/assets'
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [deg, setDeg] = useState<number>(0)
   const [countSpin, setCountSpin] = useState<number>(5)
-  const [winningResult, setWinningResult] = useState<{ text: string; img: string }>({ text: '', img: '' })
+  const [winningResult, setWinningResult] = useState<{ name: string; img: string }>({
+    name: '',
+    img: ''
+  })
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const ID = 'luckywheel'
 
   const drawWheel = (num: number) => {
@@ -39,10 +43,12 @@ const App: React.FC = () => {
 
           html.push('<li class="luckywheel-item"> <span style="')
           html.push('transform' + ': rotate(' + i * turnNum + 'turn)">')
-          html.push(`<div style="border: 2px solid ${i % 2 === 0 ? 'blue' : 'yellow'}" class="section">`)
+          html.push(
+            `<div style="border: 1.5px solid ${i % 2 === 0 ? '#1A2B57' : '#C49B60'}" class="luckywheel-item__content">`
+          )
           html.push('<img src=' + prizeList[i].img + ' style="margin: 0 auto" />')
-          html.push("<p id='curve' style='color: green; margin-top: 5px'>" + prizeList[i].text + '</p>')
-          html.push('</div></span> </li>')
+          html.push("<p style='color: #C49B60; margin-top: 5px'>" + prizeList[i].text + '</p>')
+          html.push('</div></span></li>')
         }
         prizeItems.className = 'luckywheel-list'
         container.appendChild(prizeItems)
@@ -52,32 +58,29 @@ const App: React.FC = () => {
   }
 
   function randomIndex(prizes: { text: string; img: any; percentpage: number }[]) {
-    const rand = Math.random()
-    let prizeIndex = 0
+    let winningPrizeIndex = 0
 
-    switch (true) {
-      case rand < prizes[4].percentpage:
-        prizeIndex = 4
-        break
-      case rand < prizes[4].percentpage + prizes[3].percentpage:
-        prizeIndex = 3
-        break
-      case rand < prizes[4].percentpage + prizes[3].percentpage + prizes[2].percentpage:
-        prizeIndex = 2
-        break
-      case rand < prizes[4].percentpage + prizes[3].percentpage + prizes[2].percentpage + prizes[1].percentpage:
-        prizeIndex = 1
-        break
-      case rand <
-        prizes[4].percentpage +
-          prizes[3].percentpage +
-          prizes[2].percentpage +
-          prizes[1].percentpage +
-          prizes[0].percentpage:
-        prizeIndex = 0
-        break
+    // Mảng tỉ lệ tích luỹ qua các phần quà
+    const cumulativeRatios: number[] = []
+    let cumulativeRatio = 0
+
+    for (const prize of prizes) {
+      cumulativeRatio += prize.percentpage
+      cumulativeRatios.push(cumulativeRatio)
     }
-    return prizeIndex
+
+    // Tổng tỉ lệ tích luỹ qua tất cả phần quà
+    const totalCumulativeRatio = cumulativeRatios[cumulativeRatios.length - 1]
+    const randomValue = Math.random() * totalCumulativeRatio
+
+    for (let i = 0; i < cumulativeRatios.length; i++) {
+      if (randomValue <= cumulativeRatios[i]) {
+        winningPrizeIndex = i
+        break
+      }
+    }
+
+    return winningPrizeIndex
   }
 
   const handleSpin = () => {
@@ -89,11 +92,8 @@ const App: React.FC = () => {
       }
       let d = deg
       d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / PRIZES.length))
-      setWinningResult({
-        text: PRIZES[rand].text,
-        img: PRIZES[rand].img
-      })
       setDeg(d)
+      setWinningResult({ name: PRIZES[rand].text, img: PRIZES[rand].img })
       alertAfterTransitionEnd()
     }
   }
@@ -103,19 +103,14 @@ const App: React.FC = () => {
     if (ele) {
       const container = ele.querySelector('.luckywheel-container')
       if (container) {
-        container.addEventListener(
-          'transitionend',
-          () =>
-            Swal.fire({
-              html: '<img src=' + winningResult.img + ' />',
-              imageHeight: 100,
-              //showDenyButton: true,
-              showCancelButton: true
-            }),
-          false
-        )
+        container.addEventListener('transitionend', () => setOpenModal(true), false)
       }
     }
+  }
+
+  const handleContinue = () => {
+    setOpenModal(false)
+    if (winningResult.name === 'Lượt chơi') setCountSpin((prevState) => prevState + 1)
   }
 
   useEffect(() => {
@@ -123,19 +118,42 @@ const App: React.FC = () => {
   }, [])
 
   return (
-    <React.Fragment>
-      <div className='wrapper typo' id='wrapper'>
+    <div className='relative'>
+      <Modal close={() => setOpenModal(false)} className={openModal ? '' : 'invisible opacity-0 scale-0 transition'}>
+        <div className='flex flex-col justify-center items-center gap-3 py-8 bg-white rounded-lg'>
+          <img src={Logo} className='w-[30%]' />
+          <span className='text-xl font-bold'>Chúc mừng</span>
+          <span className='text-xl font-bold'>Phần thưởng của bạn là</span>
+          <span className='text-xl font-bold text-[#C49B60]'>{winningResult.name}</span>
+          <img src={winningResult.img} className='w-[30%] object-cover' />
+          <div className='flex justify-around items-center gap-10'>
+            <button
+              className='px-10 py-2 border-2 rounded-full border-[#1A2B57] hover:border-[#C49B60] text-[#1A2B57] hover:text-[#C49B60] transition-all ease-in-out duration-150'
+              onClick={handleContinue}
+            >
+              Trang chủ
+            </button>
+            <button
+              className='px-14 py-2 rounded-full bg-[#1A2B57] text-white hover:bg-[#C49B60] transition-all ease-in-out duration-150'
+              onClick={handleContinue}
+            >
+              Tiếp tục
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <div className='wrapper' id='wrapper'>
         <section id='luckywheel' className='luckywheel'>
           <div className='luckywheel-container' style={deg !== 0 ? { transform: `rotate(${deg}deg)` } : {}}>
-            <canvas ref={canvasRef} className='luckywheel-canvas' width='600px' height='600px'>
-              Vòng Xoay May Mắn
-            </canvas>
+            <canvas ref={canvasRef} className='luckywheel-canvas' width='600px' height='600px' />
           </div>
           <div className='luckywheel-btn'>
-            <FaMapMarkerAlt className='text-[60px] text-cyan-700' />
+            <FaMapMarkerAlt className='text-[60px] text-[#1A2B57]' />
           </div>
 
-          <a className='luckywheel-logo'></a>
+          <div className='luckywheel-logo w-[90px] h-[90px] border-2 border-[#1A2B57]'>
+            <img src={Logo} className='p-2' />
+          </div>
         </section>
       </div>
       <div className='flex justify-center mt-[70px]'>
@@ -144,13 +162,13 @@ const App: React.FC = () => {
           onClick={handleSpin}
           className={`py-2 ${
             countSpin === 0 ? 'cursor-not-allowed' : 'cursor-pointer'
-          } px-5 w-[50%] rounded-lg bg-cyan-400 text-white font-bold`}
+          } px-5 w-[50%] rounded-lg bg-[#1A2B57] text-white font-bold`}
         >
           Quay
           <p className='font-light'>Còn {countSpin} lượt quay</p>
         </button>
       </div>
-    </React.Fragment>
+    </div>
   )
 }
 
