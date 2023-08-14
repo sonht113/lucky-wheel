@@ -165,10 +165,10 @@ const App: React.FC = () => {
             <canvas ref={canvasRef} className='luckywheel-canvas' />
           </div>
           <div className='luckywheel-btn'>
-            <FaMapMarkerAlt className={`text-[60px] text-[${COLORS.primary_first}]`} />
+            <FaMapMarkerAlt className='text-[60px] text-[#1A2B57]' />
           </div>
 
-          <div className={`luckywheel-logo border-2 border-[${COLORS.primary_first}]`}>
+          <div className='luckywheel-logo border-2 border-[#1A2B57]'>
             <img src={Logo} className='p-2' />
           </div>
         </section>
@@ -179,7 +179,7 @@ const App: React.FC = () => {
           onClick={handleSpin}
           className={`py-2 ${
             countSpin === 0 || spinning ? 'cursor-not-allowed' : 'cursor-pointer'
-          } px-5 w-[100%] rounded-lg bg-[${COLORS.primary_first}] text-white font-bold`}
+          } px-5 w-[100%] rounded-lg bg-[#1A2B57] text-white font-bold`}
         >
           Quay
           <p className='font-light'>Còn {countSpin} lượt quay</p>
