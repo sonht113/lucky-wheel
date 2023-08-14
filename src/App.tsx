@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { FaMapMarkerAlt } from 'react-icons/fa'
-import { PRIZES } from '@/data/constant'
+import { COLORS, PRIZES } from '@/data/constant'
 import Modal from '@/components/modal'
 import { Logo } from '@/assets'
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [deg, setDeg] = useState<number>(0)
+  const [spinning, setSpinning] = useState<boolean>(false)
   const [countSpin, setCountSpin] = useState<number>(5)
   const [winningResult, setWinningResult] = useState<{ name: string; img: string }>({
     name: '',
@@ -35,7 +36,7 @@ const App: React.FC = () => {
           ctx.translate(300, 300)
           ctx.moveTo(0, 0)
           ctx.rotate((((360 / num) * i - rotateDeg) * Math.PI) / 180)
-          ctx.arc(0, 0, 300, 0, (2 * Math.PI) / num, false) // Radius
+          ctx.arc(0, 0, 300, 0, (i * 2 * Math.PI) / num, false) // Radius
           ctx.fillStyle = '#ffffff'
           ctx.fill()
           ctx.lineWidth = 1
@@ -44,10 +45,18 @@ const App: React.FC = () => {
           html.push('<li class="luckywheel-item"> <span style="')
           html.push('transform' + ': rotate(' + i * turnNum + 'turn)">')
           html.push(
-            `<div style="border: 1.5px solid ${i % 2 === 0 ? '#1A2B57' : '#C49B60'}" class="luckywheel-item__content">`
+            `<div style="border: 1.5px solid ${
+              i % 2 === 0 ? COLORS.primary_first : COLORS.primary_second
+            }" class="luckywheel-item__content">`
           )
           html.push('<img src=' + prizeList[i].img + ' style="margin: 0 auto" />')
-          html.push("<p style='color: #C49B60; margin-top: 5px'>" + prizeList[i].text + '</p>')
+          html.push(
+            "<div class='text-container'><p class='name-prize' style='color:" +
+              COLORS.primary_second +
+              "; margin-top: 5px'>" +
+              prizeList[i].name +
+              '</div></p>'
+          )
           html.push('</div></span></li>')
         }
         prizeItems.className = 'luckywheel-list'
@@ -57,7 +66,7 @@ const App: React.FC = () => {
     }
   }
 
-  function randomIndex(prizes: { text: string; img: any; percentpage: number }[]) {
+  function randomIndex(prizes: { name: string; img: any; percentpage: number }[]) {
     let winningPrizeIndex = 0
 
     // Mảng tỉ lệ tích luỹ qua các phần quà
@@ -86,6 +95,7 @@ const App: React.FC = () => {
   const handleSpin = () => {
     if (countSpin > 0) {
       setCountSpin((prevState) => prevState - 1)
+      setSpinning(true)
       const rand = randomIndex(PRIZES)
       if (rand == null) {
         return
@@ -93,7 +103,7 @@ const App: React.FC = () => {
       let d = deg
       d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / PRIZES.length))
       setDeg(d)
-      setWinningResult({ name: PRIZES[rand].text, img: PRIZES[rand].img })
+      setWinningResult({ name: PRIZES[rand].name, img: PRIZES[rand].img })
       alertAfterTransitionEnd()
     }
   }
@@ -103,7 +113,14 @@ const App: React.FC = () => {
     if (ele) {
       const container = ele.querySelector('.luckywheel-container')
       if (container) {
-        container.addEventListener('transitionend', () => setOpenModal(true), false)
+        container.addEventListener(
+          'transitionend',
+          () => {
+            setOpenModal(true)
+            setSpinning(false)
+          },
+          false
+        )
       }
     }
   }
@@ -118,23 +135,23 @@ const App: React.FC = () => {
   }, [])
 
   return (
-    <div className='relative'>
+    <div className='relative flex flex-col justify-center items-center'>
       <Modal close={() => setOpenModal(false)} className={openModal ? '' : 'invisible opacity-0 scale-0 transition'}>
-        <div className='flex flex-col justify-center items-center gap-3 py-8 bg-white rounded-lg'>
+        <div className='flex flex-col justify-center items-center gap-3 py-8 px-8 bg-white rounded-lg'>
           <img src={Logo} className='w-[30%]' />
           <span className='text-xl font-bold'>Chúc mừng</span>
           <span className='text-xl font-bold'>Phần thưởng của bạn là</span>
           <span className='text-xl font-bold text-[#C49B60]'>{winningResult.name}</span>
           <img src={winningResult.img} className='w-[30%] object-cover' />
-          <div className='flex justify-around items-center gap-10'>
+          <div className='flex justify-around items-center xs:gap-5 md:gap-10'>
             <button
-              className='px-10 py-2 border-2 rounded-full border-[#1A2B57] hover:border-[#C49B60] text-[#1A2B57] hover:text-[#C49B60] transition-all ease-in-out duration-150'
+              className={`px-10 py-2 border-2 rounded-full border-[${COLORS.primary_first}] hover:border-[${COLORS.primary_second}] text-[${COLORS.primary_first}] hover:text-[${COLORS.primary_second}] transition-all ease-in-out duration-150`}
               onClick={handleContinue}
             >
               Trang chủ
             </button>
             <button
-              className='px-14 py-2 rounded-full bg-[#1A2B57] text-white hover:bg-[#C49B60] transition-all ease-in-out duration-150'
+              className={`px-14 py-2 rounded-full bg-[${COLORS.primary_first}] text-white hover:bg-[${COLORS.primary_second}] transition-all ease-in-out duration-150`}
               onClick={handleContinue}
             >
               Tiếp tục
@@ -142,27 +159,27 @@ const App: React.FC = () => {
           </div>
         </div>
       </Modal>
-      <div className='wrapper' id='wrapper'>
+      <div className='wrapper sm:w-[300px] md:w-[600px]' id='wrapper'>
         <section id='luckywheel' className='luckywheel'>
           <div className='luckywheel-container' style={deg !== 0 ? { transform: `rotate(${deg}deg)` } : {}}>
-            <canvas ref={canvasRef} className='luckywheel-canvas' width='600px' height='600px' />
+            <canvas ref={canvasRef} className='luckywheel-canvas' />
           </div>
           <div className='luckywheel-btn'>
-            <FaMapMarkerAlt className='text-[60px] text-[#1A2B57]' />
+            <FaMapMarkerAlt className={`text-[60px] text-[${COLORS.primary_first}]`} />
           </div>
 
-          <div className='luckywheel-logo w-[90px] h-[90px] border-2 border-[#1A2B57]'>
+          <div className={`luckywheel-logo border-2 border-[${COLORS.primary_first}]`}>
             <img src={Logo} className='p-2' />
           </div>
         </section>
       </div>
-      <div className='flex justify-center mt-[70px]'>
+      <div className='flex justify-center mt-[70px] w-[30%]'>
         <button
-          disabled={countSpin === 0}
+          disabled={countSpin === 0 || spinning}
           onClick={handleSpin}
           className={`py-2 ${
-            countSpin === 0 ? 'cursor-not-allowed' : 'cursor-pointer'
-          } px-5 w-[50%] rounded-lg bg-[#1A2B57] text-white font-bold`}
+            countSpin === 0 || spinning ? 'cursor-not-allowed' : 'cursor-pointer'
+          } px-5 w-[100%] rounded-lg bg-[${COLORS.primary_first}] text-white font-bold`}
         >
           Quay
           <p className='font-light'>Còn {countSpin} lượt quay</p>
