@@ -16,13 +16,19 @@ type Props = {
   deg: number
 
   /**
+   * Check vòng quay có đang quay
+   */
+  spinning: boolean
+
+  /**
    * Mảng các phần thưởng
    */
   prizes: { name: string; img: string; percentpage: number }[]
 }
 
-const LuckyWheel = ({ id, deg, prizes }: Props) => {
+const LuckyWheel = ({ id, deg, prizes, spinning }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const arrowRef = useRef<HTMLDivElement | null>(null)
 
   /**
    * function to drawl lucky wheel with canvas
@@ -84,6 +90,27 @@ const LuckyWheel = ({ id, deg, prizes }: Props) => {
     }
   }
 
+  function rotateArrow(isLuckyWheelSpinning: boolean) {
+    if (arrowRef.current) {
+      if (isLuckyWheelSpinning) {
+        arrowRef.current.style.left = '45%'
+        arrowRef.current.style.transform = 'translate(-45%)'
+        arrowRef.current.style.animation = `rotate ${6035 / 1000 / 10}s linear infinite`
+      } else {
+        arrowRef.current.style.left = '50%'
+        arrowRef.current.style.transform = 'translate(-50%)'
+        arrowRef.current.style.animation = ''
+      }
+    }
+    requestAnimationFrame(() => rotateArrow(isLuckyWheelSpinning))
+  }
+
+  console.log(deg)
+
+  useEffect(() => {
+    rotateArrow(spinning)
+  }, [spinning, arrowRef])
+
   useEffect(() => {
     drawWheel(prizes.length, prizes)
   }, [prizes])
@@ -94,7 +121,7 @@ const LuckyWheel = ({ id, deg, prizes }: Props) => {
         <div className='luckywheel-container' style={deg !== 0 ? { transform: `rotate(${deg}deg)` } : {}}>
           <canvas ref={canvasRef} className='luckywheel-canvas' />
         </div>
-        <div className='luckywheel-btn'>
+        <div className='luckywheel-btn' ref={arrowRef}>
           <FaMapMarkerAlt className='text-[60px] text-[#1A2B57]' />
         </div>
 

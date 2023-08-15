@@ -112,10 +112,20 @@
 }
 .luckywheel-btn {
   position: absolute;
-  left: 50%;
+  /* left: 50%; */
   top: -35px;
   z-index: 3;
-  transform: translate(-50%);
+  /* transform: translate(-50%); */
+  /* transform-origin: top center; */
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg); /* Quay từ góc 0 độ */
+  }
+  to {
+    transform: rotate(-20deg); /* Quay đến góc 360 độ */
+  }
 }
 
 @media screen and (min-width: 320px) and (max-width: 436px) {

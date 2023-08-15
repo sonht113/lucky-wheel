@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { PRIZES } from '@/data/constant'
 import { LuckyWheel, Modal, WinningResult } from '@/components'
-import { randomIndex } from '@/utils/randomIndexPrize'
+import { randomIndex } from '@/utils/random-index-prize'
+import dayjs, { Dayjs } from 'dayjs'
+import { getTimeSpinLuckyWheel } from './utils/get-time-spin-lucky-wheel'
 
 const ID = 'luckywheel'
 
@@ -15,10 +17,12 @@ const App: React.FC = () => {
     img: ''
   })
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [time, setTime] = useState<Dayjs>()
 
   const handleSpin = useCallback(() => {
     if (countSpin > 0) {
       setSpinning(true)
+      setTime(dayjs())
       setCountSpin((prevState) => prevState - 1)
       const rand = randomIndex(PRIZES)
       if (rand == null) {
@@ -49,6 +53,12 @@ const App: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if (!spinning && time) {
+      getTimeSpinLuckyWheel(time, dayjs())
+    }
+  }, [spinning])
+
   const handleContinue = useCallback(() => {
     setOpenModal(false)
     if (winningResult.name === 'Lượt chơi') setCountSpin((prevState) => prevState + 1)
@@ -59,7 +69,7 @@ const App: React.FC = () => {
       <Modal close={() => setOpenModal(false)} className={openModal ? '' : 'invisible opacity-0 scale-0 transition'}>
         <WinningResult winningResult={winningResult} handleContinue={handleContinue} />
       </Modal>
-      <LuckyWheel id={ID} deg={deg} prizes={PRIZES} />
+      <LuckyWheel id={ID} deg={deg} prizes={PRIZES} spinning={spinning} />
       <div className='flex justify-center mt-[70px] w-[30%]'>
         <button
           disabled={countSpin === 0 || spinning}
