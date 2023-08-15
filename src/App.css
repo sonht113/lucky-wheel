@@ -1,0 +1,16 @@
+.menu-list-prize-won {
+  display: block;
+}
+
+.icon-menu-list-prize-won {
+  display: none;
+}
+@media screen and (max-width: 840px) {
+  .menu-list-prize-won {
+    display: none;
+  }
+
+  .icon-menu-list-prize-won {
+    display: block;
+  }
+}

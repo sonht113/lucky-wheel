@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { PRIZES } from '@/data/constant'
-import { LuckyWheel, Modal, WinningResult } from '@/components'
+import { AiOutlineMenu } from 'react-icons/ai'
+import { ListPrizeWon, LuckyWheel, Modal, WinningResult } from '@/components'
 import { randomIndex } from '@/utils/random-index-prize'
 import dayjs, { Dayjs } from 'dayjs'
 import { getTimeSpinLuckyWheel } from './utils/get-time-spin-lucky-wheel'
@@ -16,8 +17,18 @@ const App: React.FC = () => {
     name: '',
     img: ''
   })
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [listPrizeWon, setListPrizeWon] = useState<
+    {
+      img: string
+      name: string
+      time: string
+    }[]
+  >([])
   const [time, setTime] = useState<Dayjs>()
+  const [configModal, setConfigModal] = useState<{ openModal: boolean; typeModal: 'list' | 'notify' }>({
+    openModal: false,
+    typeModal: 'notify'
+  })
 
   const handleSpin = useCallback(() => {
     if (countSpin > 0) {
@@ -32,6 +43,10 @@ const App: React.FC = () => {
       d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / PRIZES.length))
       setDeg(d)
       setWinningResult({ name: PRIZES[rand].name, img: PRIZES[rand].img })
+      setListPrizeWon([
+        ...listPrizeWon,
+        { name: PRIZES[rand].name, img: PRIZES[rand].img, time: dayjs().format('DD/MM/YYYY HH:mm:ss') }
+      ])
       alertAfterTransitionEnd()
     }
   }, [deg])
@@ -44,7 +59,7 @@ const App: React.FC = () => {
         container.addEventListener(
           'transitionend',
           () => {
-            setOpenModal(true)
+            setConfigModal({ typeModal: 'notify', openModal: true })
             setSpinning(false)
           },
           false
@@ -53,21 +68,51 @@ const App: React.FC = () => {
     }
   }
 
+  const handleContinue = useCallback(() => {
+    setConfigModal({ ...configModal, openModal: false })
+    if (winningResult.name === 'Lượt chơi') setCountSpin((prevState) => prevState + 1)
+  }, [countSpin])
+
+  const handleOpenListOfPrizeWon = () => {
+    setConfigModal({
+      openModal: true,
+      typeModal: 'list'
+    })
+  }
+
   useEffect(() => {
     if (!spinning && time) {
       getTimeSpinLuckyWheel(time, dayjs())
     }
   }, [spinning])
 
-  const handleContinue = useCallback(() => {
-    setOpenModal(false)
-    if (winningResult.name === 'Lượt chơi') setCountSpin((prevState) => prevState + 1)
-  }, [countSpin])
-
   return (
     <div className='relative flex flex-col justify-center items-center'>
-      <Modal close={() => setOpenModal(false)} className={openModal ? '' : 'invisible opacity-0 scale-0 transition'}>
-        <WinningResult winningResult={winningResult} handleContinue={handleContinue} />
+      <div
+        onClick={handleOpenListOfPrizeWon}
+        className='menu-list-prize-won fixed top-10 right-7 p-3 rounded-lg bg-[#1A2B57] text-white cursor-pointer'
+      >
+        Danh sách quà đã trúng thưởng
+      </div>
+      <AiOutlineMenu
+        onClick={handleOpenListOfPrizeWon}
+        className={'icon-menu-list-prize-won text-[30px] fixed top-10 right-7 cursor-pointer'}
+      />
+
+      <Modal
+        close={() => {
+          setConfigModal({
+            typeModal: 'notify',
+            openModal: false
+          })
+        }}
+        className={configModal.openModal ? '' : 'invisible opacity-0 scale-0 transition'}
+      >
+        {configModal.typeModal === 'notify' ? (
+          <WinningResult winningResult={winningResult} handleContinue={handleContinue} />
+        ) : (
+          <ListPrizeWon listPrizeWon={listPrizeWon} />
+        )}
       </Modal>
       <LuckyWheel id={ID} deg={deg} prizes={PRIZES} spinning={spinning} />
       <div className='flex justify-center mt-[70px] w-[30%]'>
