@@ -27,7 +27,7 @@ export const PRIZES = [
     percentpage: 1 // 1%
   },
   {
-    name: 'E-Voucer 50k',
+    name: 'E-Voucher 50k',
     img: Nitro,
     percentpage: 40 // 40%
   },
