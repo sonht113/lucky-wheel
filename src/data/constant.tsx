@@ -19,7 +19,7 @@ export const PRIZES = [
   {
     name: 'Lượt chơi',
     img: J2Logo,
-    percentpage: 50 // 50%
+    percentpage: 80 // 50%
   },
   {
     name: 'Bộ chén',

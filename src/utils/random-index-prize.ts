@@ -12,7 +12,8 @@ export function randomIndex(prizes: { name: string; img: any; percentpage: numbe
 
   // Tổng tỉ lệ tích luỹ qua tất cả phần quà
   const totalCumulativeRatio = cumulativeRatios[cumulativeRatios.length - 1]
-  const randomValue = Math.random() * totalCumulativeRatio
+  const randomValue = setTimeout(() => Math.random() * totalCumulativeRatio, 50000)
+  console.log(randomValue)
 
   for (let i = 0; i < cumulativeRatios.length; i++) {
     if (randomValue <= cumulativeRatios[i]) {

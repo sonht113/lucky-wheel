@@ -12,7 +12,7 @@ const ListPrizeWon = ({ listPrizeWon }: Props) => {
       <div className={`list-prize-won ${listPrizeWon.length === 0 ? 'h-[200px]' : 'h-[400px]'} overflow-auto`}>
         {listPrizeWon.length === 0 && <p className='text-center'>Bạn chưa trúng phần quà nào</p>}
         {listPrizeWon.length !== 0 && (
-          <table className='table-fixed border-[5px] p-2 rounded-lg '>
+          <table className='table-fixed rounded-lg '>
             <thead>
               <tr>
                 <th className=' w-[10%]'>Ảnh</th>

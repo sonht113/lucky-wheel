@@ -112,10 +112,10 @@
 }
 .luckywheel-btn {
   position: absolute;
-  /* left: 50%; */
+  left: 50%;
   top: -35px;
   z-index: 3;
-  /* transform: translate(-50%); */
+  transform: translate(-50%);
   /* transform-origin: top center; */
 }
 
@@ -124,22 +124,52 @@
     transform: rotate(0deg); /* Quay từ góc 0 độ */
   }
   to {
-    transform: rotate(-20deg); /* Quay đến góc 360 độ */
+    transform: rotate(-20deg); /* Quay đến góc -20 độ */
   }
 }
 
-@media screen and (min-width: 320px) and (max-width: 436px) {
+@media screen and (max-width: 436px) and (min-width: 360px) {
   .luckywheel {
-    width: 250px;
-    height: 250px;
+    width: 350px;
+    height: 350px;
   }
+
   .luckywheel-container {
-    width: 230px;
-    height: 230px;
+    width: 330px;
+    height: 330px;
+  }
+
+  .luckywheel-item span {
+    top: -12px;
+    -webkit-transform-origin: 50% 175px;
+    -ms-transform-origin: 50% 175px;
+    transform-origin: 50% 175px;
+  }
+
+  .luckywheel-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .luckywheel-item__content {
+    height: 90px;
+  }
+
+  .luckywheel-item__content > img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .text-container {
+    width: 60px;
+  }
+
+  .name-prize {
+    font-size: 10px;
   }
 }
 
-@media screen and (max-width: 636px) {
+@media screen and (max-width: 636px) and (min-width: 437px) {
   .luckywheel {
     width: 400px;
     height: 400px;
@@ -164,7 +194,12 @@
     height: 110px;
   }
 
+  .luckywheel-item__content > img {
+    width: 50px;
+    height: 50px;
+  }
+
   .name-prize {
-    display: none;
+    font-size: 10px;
   }
 }
