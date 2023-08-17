@@ -2,15 +2,16 @@
   .list-prize-won-container {
     width: 400px;
   }
-
-  .list-prize-won {
-    width: 500px;
-  }
 }
 
-@media screen and (max-width: 436px) {
+@media screen and (max-width: 436px) and (min-width: 360px) {
   .list-prize-won-container {
     width: 300px;
+    overflow: auto;
+  }
+
+  .list-prize-won {
+    width: 400px;
     overflow: auto;
   }
 }
