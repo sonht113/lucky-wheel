@@ -4,19 +4,22 @@ import { PRIZES } from '@/data/constant'
 import { AiOutlineMenu } from 'react-icons/ai'
 import { ListPrizeWon, LuckyWheel, Modal, WinningResult } from '@/components'
 import dayjs, { Dayjs } from 'dayjs'
-import { getTimeSpinLuckyWheel } from '@/utils/get-time-spin-lucky-wheel'
+import { getTimeDifference } from '@/utils/get-time-difference'
 import { delayedApiCall } from '@/api'
 import { ConfigModal, PrizeWon, StyleRotate, WinningResultType } from '@/types'
 
 const ID = 'luckywheel'
+const CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE = 12
+const CURRENT_TIME_DURATION_NEEDLE_ROTATE = 0.8
 
 const App: React.FC = () => {
   const [styleRotate, setStyleRotate] = useState<StyleRotate>({
     deg: 0,
-    timingFunc: 'ease-in-out'
+    timingFunc: 'ease-in-out',
+    timeDuration: 0
   })
   const [spinning, setSpinning] = useState<boolean>(false)
-  const [countSpin, setCountSpin] = useState<number>(5)
+  const [countSpin, setCountSpin] = useState<number>(10)
   const [winningResult, setWinningResult] = useState<WinningResultType>({
     name: '',
     img: ''
@@ -27,11 +30,12 @@ const App: React.FC = () => {
     openModal: false,
     typeModal: 'notify'
   })
+  const [timeNeedleRotate, setTimeNeedleRotate] = useState<number>(0)
   /**
    * State for case call api get prize on server
    * If use case random index, you should remove this useState
    */
-  const [index, setIndex] = useState<number | null>(null)
+  const [indexPrizeWon, setIndexPrizeWon] = useState<number | null>(null)
 
   /**
    * Function to spin and call api get prize on server
@@ -43,15 +47,16 @@ const App: React.FC = () => {
       delayedApiCall()
         .then((result: number) => {
           console.log('Returned result:', result)
-          setIndex(result)
+          setIndexPrizeWon(result)
         })
         .catch((error) => {
           console.error('Caught error:', error)
         })
       setCountSpin((prevState) => prevState - 1)
       let d = styleRotate.deg
-      d = d - 180
-      setStyleRotate({ timingFunc: 'ease-in-out', deg: d })
+      d = d + (360 - (d % 360)) + 360 * 10
+      setStyleRotate({ timingFunc: 'ease-in-out', deg: d, timeDuration: CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE })
+      setTimeNeedleRotate(CURRENT_TIME_DURATION_NEEDLE_ROTATE)
     }
   }
 
@@ -69,7 +74,7 @@ const App: React.FC = () => {
   //     }
   //     let d = styleRotate.deg
   //     d = d + (360 - (d % 360)) + (360 * 10 - rand * (360 / PRIZES.length))
-  //     setStyleRotate({timingFunc: 'ease-in-out', deg: d})
+  //     setStyleRotate({timingFunc: 'ease-in-out', deg: d, timeDuration: CURRENT_TIME_DURATION_ROTATE})
   //     setWinningResult({ name: PRIZES[rand].name, img: PRIZES[rand].img })
   //     setListPrizeWon([
   //       ...listPrizeWon,
@@ -110,28 +115,36 @@ const App: React.FC = () => {
 
   /**
    * useEffect for case call api get prize on server
-   * If use handleSpin for case random index in array prize at file constant, you should remove this useEffect
+   * If you use function handleSpin for case random index in array prize at file constant,
+   * you should remove or comment this useEffect
    */
   useEffect(() => {
-    if (index !== null) {
+    if (indexPrizeWon !== null && time) {
+      const timeCallApi = getTimeDifference(time, dayjs())
       let d = styleRotate.deg
-      d = d + (360 - (d % 360)) + (360 * 10 - index * (360 / PRIZES.length))
-      setStyleRotate({ deg: d, timingFunc: 'ease' })
-      setWinningResult({ name: PRIZES[index].name, img: PRIZES[index].img })
+      d = d + (360 - (d % 360)) + (360 * 10 - indexPrizeWon * (360 / PRIZES.length))
+      const timeRotate = CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE - timeCallApi
+      setStyleRotate({
+        deg: d,
+        timingFunc: 'ease',
+        timeDuration: timeRotate
+      })
+      setTimeNeedleRotate(((timeRotate / 10) * 1) / 4)
+      setWinningResult({ name: PRIZES[indexPrizeWon].name, img: PRIZES[indexPrizeWon].img })
       setListPrizeWon([
         ...listPrizeWon,
-        { name: PRIZES[index].name, img: PRIZES[index].img, time: dayjs().format('DD/MM/YYYY HH:mm:ss') }
+        {
+          name: PRIZES[indexPrizeWon].name,
+          img: PRIZES[indexPrizeWon].img,
+          time: dayjs().format('DD/MM/YYYY HH:mm:ss')
+        }
       ])
       alertAfterTransitionEnd()
-      setIndex(null)
+      setIndexPrizeWon(null)
     }
-  }, [index])
+  }, [indexPrizeWon])
 
-  useEffect(() => {
-    if (!spinning && time) {
-      console.log(getTimeSpinLuckyWheel(time, dayjs()))
-    }
-  }, [spinning])
+  useEffect(() => {}, [timeNeedleRotate])
 
   return (
     <div className='relative flex flex-col justify-center items-center'>
@@ -141,10 +154,10 @@ const App: React.FC = () => {
       >
         Danh sách quà đã trúng thưởng
       </div>
-      {/* <AiOutlineMenu
+      <AiOutlineMenu
         onClick={handleOpenListOfPrizeWon}
         className={'icon-menu-list-prize-won text-[30px] fixed top-10 right-7 cursor-pointer'}
-      /> */}
+      />
 
       <Modal
         close={() => {
@@ -161,8 +174,14 @@ const App: React.FC = () => {
           <ListPrizeWon listPrizeWon={listPrizeWon} />
         )}
       </Modal>
-      <LuckyWheel id={ID} styleRotate={styleRotate} prizes={PRIZES} spinning={spinning} />
-      <div className='flex justify-center mt-[70px] w-[30%]'>
+      <LuckyWheel
+        id={ID}
+        styleRotate={styleRotate}
+        prizes={PRIZES}
+        spinning={spinning}
+        timeNeedleRotate={timeNeedleRotate}
+      />
+      <div className='flex justify-center mt-[70px] w-[50%]'>
         <button
           disabled={countSpin === 0 || spinning}
           onClick={handleSpin}
@@ -170,8 +189,8 @@ const App: React.FC = () => {
             countSpin === 0 || spinning ? 'cursor-not-allowed' : 'cursor-pointer'
           } px-5 w-[100%] rounded-lg bg-[#1A2B57] text-white font-bold`}
         >
-          Quay
-          <p className='font-light'>Còn {countSpin} lượt quay</p>
+          {spinning ? 'Đang quay' : 'Quay'}
+          <p className='font-light'>{countSpin > 0 ? `Còn ${countSpin} lượt quay` : 'Bạn đã hết lượt quay'}</p>
         </button>
       </div>
     </div>

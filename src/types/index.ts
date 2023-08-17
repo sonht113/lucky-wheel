@@ -16,5 +16,6 @@ export type WinningResultType = {
 
 export type StyleRotate = {
   deg: number
-  timingFunc: 'ease-in-out' | 'ease'
+  timingFunc: 'ease-in-out' | 'ease',
+  timeDuration: number
 }

@@ -14,24 +14,31 @@ type Props = {
    * Css cho bánh xe khi quay
    * deg: góc quay sau khi tìm ra kết quả phần thưởng để kim trỏ đúng vị trí phần thưởng
    * timingFunc: tốc độ quay và độ mượt cho bánh xe
+   * timeDuration: transiton duration
    */
   styleRotate: {
     deg: number
     timingFunc: string
+    timeDuration: number
   }
 
   /**
    * Check vòng quay có đang quay
    */
-  spinning: boolean
+  spinning?: boolean
 
   /**
    * Mảng các phần thưởng
    */
   prizes: { name: string; img: string; percentpage: number }[]
+
+  /**
+   * Thời gian kim lắc lư một lần (animation-duration)
+   */
+  timeNeedleRotate: number
 }
 
-const LuckyWheel = ({ id, styleRotate, prizes, spinning }: Props) => {
+const LuckyWheel = ({ id, styleRotate, prizes, spinning, timeNeedleRotate }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const arrowRef = useRef<HTMLDivElement | null>(null)
 
@@ -65,11 +72,7 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning }: Props) => {
           ctx.moveTo(0, 0)
           ctx.rotate((((360 / num) * i - rotateDeg) * Math.PI) / 180)
           ctx.arc(0, 0, 250, 0, (2 * Math.PI) / num, false) // Radius
-          if (i % 2 == 0) {
-            ctx.fillStyle = '#e9a91f'
-          } else {
-            ctx.fillStyle = '#f6cc59'
-          }
+          ctx.fillStyle = '#ffffff'
           ctx.fill()
           ctx.lineWidth = 1
           ctx.strokeStyle = '#e72e04'
@@ -95,22 +98,20 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning }: Props) => {
     }
   }
 
-  // function rotateArrow() {
-  //   if (arrowRef.current) {
-  //     arrowRef.current.style.animation = `rotate 0.8s linear infinite`
-  //     arrowRef.current.style.transitionTimingFunction = 'ease in out'
-  //     arrowRef.current.style.transitionDuration = '6s'
-  //   }
-  //   requestAnimationFrame(() => rotateArrow())
-  // }
+  function rotateArrow(spinningLuckyWheel?: boolean, timeNeedleRotate?: number) {
+    if (arrowRef.current) {
+      if (spinningLuckyWheel && timeNeedleRotate) {
+        arrowRef.current.style.animation = `rotate ${timeNeedleRotate}s linear infinite`
+      } else {
+        arrowRef.current.style.animation = ''
+      }
+    }
+    requestAnimationFrame(() => rotateArrow(spinningLuckyWheel, timeNeedleRotate))
+  }
 
-  // console.log(deg)
-
-  // useEffect(() => {
-  //   if (spinning) {
-  //     rotateArrow()
-  //   }
-  // }, [spinning, arrowRef])
+  useEffect(() => {
+    void rotateArrow(spinning, timeNeedleRotate)
+  }, [spinning, arrowRef, timeNeedleRotate])
 
   useEffect(() => {
     drawWheel(prizes)
@@ -119,6 +120,12 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning }: Props) => {
   return (
     <div className='wrapper sm:w-[300px] md:w-[600px]' id='wrapper'>
       <section id='luckywheel' className='luckywheel'>
+        <div className='luckywheel-btn'>
+          <div ref={arrowRef} className='luckywheel-btn-icon '>
+            <FaMapMarkerAlt className='text-[60px] text-[#1A2B57]' />
+          </div>
+        </div>
+
         <div
           className='luckywheel-container'
           style={
@@ -126,15 +133,12 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning }: Props) => {
               ? {
                   transform: `rotate(${styleRotate.deg}deg)`,
                   transitionTimingFunction: styleRotate.timingFunc,
-                  transitionDuration: '6s'
+                  transitionDuration: `${styleRotate.timeDuration}s`
                 }
               : {}
           }
         >
           <canvas ref={canvasRef} className='luckywheel-canvas' width={'500px'} height={'500px'} />
-        </div>
-        <div className='luckywheel-btn' ref={arrowRef}>
-          <FaMapMarkerAlt className='text-[60px] text-[#1A2B57]' />
         </div>
 
         <div className='luckywheel-logo border-2 border-[#1A2B57]'>

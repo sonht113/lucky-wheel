@@ -1,17 +1,19 @@
+import { PRIZES } from '@/data/constant'
+
 function callApi(): Promise<number> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const randomNumber = Math.floor(Math.random() * 8) // Generate a random number
-      resolve(randomNumber) // Resolve the promise with the random number
-    }, 2000) // Simulate a delay of 1 second
+      const randomNumber = Math.floor(Math.random() * PRIZES.length)
+      resolve(randomNumber)
+    }, 2000)
   })
 }
 
 export async function delayedApiCall() {
   try {
-    const result = await callApi() // Wait for the API call to complete
+    const result = await callApi()
     console.log('API result:', result)
-    return result // Return the result
+    return result
   } catch (error) {
     console.error('Error:', error)
     throw error

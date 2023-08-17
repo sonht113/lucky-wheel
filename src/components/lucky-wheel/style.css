@@ -84,7 +84,7 @@
 .luckywheel-item span {
   position: relative;
   display: block;
-  top: -12px;
+  top: -10px;
   padding-top: 30px;
   margin: 0 auto;
   text-align: center;
@@ -110,13 +110,17 @@
   border-radius: 50%;
   background-color: white;
 }
+
 .luckywheel-btn {
   position: absolute;
   left: 50%;
   top: -35px;
   z-index: 3;
   transform: translate(-50%);
-  /* transform-origin: top center; */
+}
+
+.luckywheel-btn-icon {
+  transform-origin: center;
 }
 
 @keyframes rotate {
@@ -140,6 +144,7 @@
   }
 
   .luckywheel-item span {
+    padding-top: 20px;
     top: -12px;
     -webkit-transform-origin: 50% 175px;
     -ms-transform-origin: 50% 175px;
@@ -180,6 +185,7 @@
   }
 
   .luckywheel-item span {
+    padding-top: 20px;
     -webkit-transform-origin: 50% 200px;
     -ms-transform-origin: 50% 200px;
     transform-origin: 50% 200px;
@@ -197,6 +203,10 @@
   .luckywheel-item__content > img {
     width: 50px;
     height: 50px;
+  }
+
+  .text-container {
+    width: 60px;
   }
 
   .name-prize {
