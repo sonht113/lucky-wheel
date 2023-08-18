@@ -1,0 +1,5 @@
+@media screen and (max-width: 636px) and (min-width: 360px) {
+  .modal-container {
+    width: 300px;
+  }
+}

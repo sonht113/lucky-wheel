@@ -5,17 +5,15 @@ function callApi(): Promise<number> {
     setTimeout(() => {
       const randomNumber = Math.floor(Math.random() * PRIZES.length)
       resolve(randomNumber)
-    }, 2000)
+    }, 3000)
   })
 }
 
 export async function delayedApiCall() {
   try {
     const result = await callApi()
-    console.log('API result:', result)
     return result
   } catch (error) {
-    console.error('Error:', error)
     throw error
   }
 }

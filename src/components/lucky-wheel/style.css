@@ -55,7 +55,6 @@
   top: 0;
   width: 100%;
   height: 100%;
-  color: #e4370e;
   font-weight: bold;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
 }
@@ -126,9 +125,11 @@
 @keyframes rotate {
   from {
     transform: rotate(0deg); /* Quay từ góc 0 độ */
+    transition-timing-function: ease-in-out;
   }
   to {
-    transform: rotate(-20deg); /* Quay đến góc -20 độ */
+    transform: rotate(-30deg); /* Quay đến góc -20 độ */
+    transition-timing-function: ease-in-out;
   }
 }
 

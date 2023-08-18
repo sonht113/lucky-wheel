@@ -10,7 +10,7 @@ import { ConfigModal, PrizeWon, StyleRotate, WinningResultType } from '@/types'
 
 const ID = 'luckywheel'
 const CURRENT_TIME_DURATION_LUCKY_WHEEL_ROTATE = 12
-const CURRENT_TIME_DURATION_NEEDLE_ROTATE = 0.8
+const CURRENT_TIME_DURATION_NEEDLE_ROTATE = 0.6
 
 const App: React.FC = () => {
   const [styleRotate, setStyleRotate] = useState<StyleRotate>({
@@ -46,7 +46,6 @@ const App: React.FC = () => {
       setTime(dayjs())
       delayedApiCall()
         .then((result: number) => {
-          console.log('Returned result:', result)
           setIndexPrizeWon(result)
         })
         .catch((error) => {
@@ -130,6 +129,14 @@ const App: React.FC = () => {
         timeDuration: timeRotate
       })
       setTimeNeedleRotate(((timeRotate / 10) * 1) / 4)
+
+      /**
+       * Giảm tốc độ của kim sau khoảng thời gian tốc độ lucky wheel quay với gia tốc đều time = (timeRotate / 10) * 3 / 4) * 10000
+       */
+      setTimeout(() => {
+        setTimeNeedleRotate((timeRotate / 10) * 3 / 4)
+      }, ((timeRotate / 10) * 3 / 4) * 10000)
+
       setWinningResult({ name: PRIZES[indexPrizeWon].name, img: PRIZES[indexPrizeWon].img })
       setListPrizeWon([
         ...listPrizeWon,
@@ -143,8 +150,6 @@ const App: React.FC = () => {
       setIndexPrizeWon(null)
     }
   }, [indexPrizeWon])
-
-  useEffect(() => {}, [timeNeedleRotate])
 
   return (
     <div className='relative flex flex-col justify-center items-center'>

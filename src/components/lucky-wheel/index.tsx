@@ -23,7 +23,7 @@ type Props = {
   }
 
   /**
-   * Check vòng quay có đang quay
+   * Check trạng thái của vòng quay
    */
   spinning?: boolean
 
@@ -33,7 +33,7 @@ type Props = {
   prizes: { name: string; img: string; percentpage: number }[]
 
   /**
-   * Thời gian kim lắc lư một lần (animation-duration)
+   * Thời gian kim lắc một lần (animation-duration)
    */
   timeNeedleRotate: number
 }
@@ -58,6 +58,7 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning, timeNeedleRotate }: Pro
     if (ulElementFirstRender) {
       ulElementFirstRender.remove()
     }
+    
     if (ele) {
       const prizeItems = document.createElement('ul')
       const container = ele.querySelector('.luckywheel-container')
@@ -75,7 +76,7 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning, timeNeedleRotate }: Pro
           ctx.fillStyle = '#ffffff'
           ctx.fill()
           ctx.lineWidth = 1
-          ctx.strokeStyle = '#e72e04'
+          ctx.strokeStyle = '#1A2B57'
           ctx.stroke()
           ctx.restore()
 
@@ -114,7 +115,7 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning, timeNeedleRotate }: Pro
   }, [spinning, arrowRef, timeNeedleRotate])
 
   useEffect(() => {
-    drawWheel(prizes)
+    void drawWheel(prizes)
   }, [prizes])
 
   return (
