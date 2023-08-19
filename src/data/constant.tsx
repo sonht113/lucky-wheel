@@ -1,29 +1,29 @@
-import { Nitro, Non, Ao, Miss, Vong, J2Logo } from '@/assets'
+import { Nitro } from '@/assets'
 
 export const PRIZES = [
   {
     name: 'Bộ trà',
-    img: Ao,
+    img: Nitro,
     percentpage: 1 // 1%
   },
   {
     name: 'E-Voucher 100k',
-    img: Non,
+    img: Nitro,
     percentpage: 10 // 10%
   },
   {
     name: '100 điểm',
-    img: Vong,
+    img: Nitro,
     percentpage: 20 // 20%
   },
   {
     name: 'Lượt chơi',
-    img: J2Logo,
+    img: Nitro,
     percentpage: 80 // 50%
   },
   {
     name: 'Bộ chén',
-    img: Miss,
+    img: Nitro,
     percentpage: 1 // 1%
   },
   {
@@ -33,7 +33,7 @@ export const PRIZES = [
   },
   {
     name: '10 điểm',
-    img: Miss,
+    img: Nitro,
     percentpage: 60 // 60%
   },
   {

@@ -1,6 +1,5 @@
 import { memo, useEffect, useRef } from 'react'
 import { FaMapMarkerAlt } from 'react-icons/fa'
-import { Logo } from '@/assets'
 import './style.css'
 import { COLORS } from '@/data/constant'
 
@@ -58,7 +57,7 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning, timeNeedleRotate }: Pro
     if (ulElementFirstRender) {
       ulElementFirstRender.remove()
     }
-    
+
     if (ele) {
       const prizeItems = document.createElement('ul')
       const container = ele.querySelector('.luckywheel-container')
@@ -142,8 +141,8 @@ const LuckyWheel = ({ id, styleRotate, prizes, spinning, timeNeedleRotate }: Pro
           <canvas ref={canvasRef} className='luckywheel-canvas' width={'500px'} height={'500px'} />
         </div>
 
-        <div className='luckywheel-logo border-2 border-[#1A2B57]'>
-          <img src={Logo} className='p-2' />
+        <div className='luckywheel-logo flex border-2 border-[#1A2B57]'>
+          <img src={'vite.svg'} className='p-2' />
         </div>
       </section>
     </div>

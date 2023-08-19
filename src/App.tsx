@@ -134,8 +134,8 @@ const App: React.FC = () => {
        * Giảm tốc độ của kim sau khoảng thời gian tốc độ lucky wheel quay với gia tốc đều time = (timeRotate / 10) * 3 / 4) * 10000
        */
       setTimeout(() => {
-        setTimeNeedleRotate((timeRotate / 10) * 3 / 4)
-      }, ((timeRotate / 10) * 3 / 4) * 10000)
+        setTimeNeedleRotate(((timeRotate / 10) * 3) / 4)
+      }, (((timeRotate / 10) * 3) / 4) * 10000)
 
       setWinningResult({ name: PRIZES[indexPrizeWon].name, img: PRIZES[indexPrizeWon].img })
       setListPrizeWon([
