@@ -1,5 +1,4 @@
 import { COLORS } from '@/data/constant'
-import { Logo } from '@/assets'
 import './style.css'
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 const WinningResult = ({ winningResult, handleContinue }: Props) => {
   return (
     <div className='modal-container flex flex-col justify-center items-center gap-2 py-1 px-5 bg-white rounded-lg'>
-      <img src={Logo} className='w-[30%]' />
+      <img src={'vite.svg'} className='w-[30%]' />
       <span className='text-lg font-bold'>Chúc mừng</span>
       <span className='text-lg font-bold'>Phần thưởng của bạn là</span>
       <span className='text-lg font-bold text-[#C49B60]'>{winningResult.name}</span>
